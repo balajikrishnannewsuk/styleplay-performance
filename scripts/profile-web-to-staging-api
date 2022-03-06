@@ -1,0 +1,4 @@
+#!/bin/bash
+
+kubectl patch deployment profile-web-deployment \
+  --patch "$(cat k8s/patches/profile-web-deployment/profile-api_staging.yaml)"

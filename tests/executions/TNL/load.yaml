@@ -1,0 +1,32 @@
+modules:
+  blazemeter:
+    token: 1c401f105bd4b603bd218952:1bcb50524ded76719d91dda08f6fa8bc4f59ecb13ec50c88dd551d238206637f469a6933
+
+execution:
+  - executor: jmeter
+    scenario: Style play load test
+    concurrency: 10    # number of Virtual users
+    throughput: 4        # max rps
+    # iterations : 1
+    ramp-up: 1m
+    hold-for: 30m
+
+reporting: 
+- module: blazemeter
+  report-name: Style play load test report-10 concurrency and 4 throughput
+  test: Taurus test
+  project: Style play load test project
+# - module: console
+# - module: final-stats
+#   summary: true  # overall samples count and percent of failures
+#   percentiles: true  # display average times and percentiles
+#   failed-labels: false  # provides list of sample labels with failures
+#   test-duration: true  # provides test duration
+#   dump-csv: TaurusResult/perf_result_csv.csv
+# - module: passfail
+#   criteria:
+#   - avg-rt>150ms, stop as failed
+#   - failures>10%
+
+included-configs:
+  - scenarios/styleplayloadtest.yaml

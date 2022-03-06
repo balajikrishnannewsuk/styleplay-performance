@@ -1,0 +1,11 @@
+.common-attributes: &common-attributes
+  method: GET
+
+scenarios:
+  recently-played:
+    requests:
+      - label: RecentlyPlayed virgin-radio
+        url: ${virginradio_cdn_url}/apps/virgin-radio-v1/theaters/recently-played
+        <<: *common-attributes
+
+

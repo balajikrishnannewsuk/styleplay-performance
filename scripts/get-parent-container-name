@@ -1,0 +1,9 @@
+#!/bin/bash
+
+JENKINS_SLAVE_CONTAINER_NAME=$( \
+  docker ps --format "{{.Image}},{{.Names}}" \
+    | grep jenkins_slave \
+    | cut -d ',' -f 2 \
+)
+
+echo $JENKINS_SLAVE_CONTAINER_NAME

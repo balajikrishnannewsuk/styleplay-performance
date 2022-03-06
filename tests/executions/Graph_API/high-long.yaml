@@ -1,0 +1,44 @@
+.common-settings: &common-settings
+  ramp-up: 30m
+  hold-for: 1h
+  locations:
+    us-east4-a: 3
+  location-weighted: false
+
+execution:
+  - <<: *common-settings
+    scenario: schedule
+    concurrency: 5
+    throughput: 10
+  - <<: *common-settings
+    scenario: stations
+    concurrency: 10
+    throughput: 30
+  - <<: *common-settings
+    scenario: stations-with-schedule
+    concurrency: 5
+    throghput: 20
+  - <<: *common-settings
+    scenario: on-air-now
+    concurrency: 5
+    throughput: 25
+  - <<: *common-settings
+    scenario: schedule-with-recordings
+    concurrency: 5
+    throughput: 5
+  - <<: *common-settings
+    scenario: podcast-with-episodes
+    concurrency: 5
+    throughput: 14 # Live events had 100k users/hour. This should handle half of that traffic. 50k/60m/60s = 14 rps
+  - <<: *common-settings
+    scenario: podcast-episode
+    concurrency: 5
+    throughput: 14
+  - <<: *common-settings
+    scenario: podcasts
+    concurrency: 5
+    throughput: 14
+
+included-configs:
+  - scenarios/audio-platform.yaml
+

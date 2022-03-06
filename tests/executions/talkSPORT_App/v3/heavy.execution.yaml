@@ -1,0 +1,69 @@
+# Stats retrieved from https://docs.google.com/document/d/1w_iSVo7gxqmVJocg0pTiOZN5RRAUTmaQLFoKZ9TsMJw/edit
+#
+#
+# Heavy load increase on opening the app and viewing each screen
+# Users are already logged in
+#
+# Peak of 65k users over 60s, each opening the app once and viewing each screen
+# Throughput of 1300 hits per second (65k over 60s plus 20%)
+
+execution:
+- scenario: ios-open-and-use-app-v7_5
+  concurrency: 1000                       # number of virtual users
+  throughput: 650                         # maximum hits per second to reach
+  ramp-up: 5m
+  hold-for: 15m
+  locations:
+    us-east4-a: 12                         # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+- scenario: android-open-and-use-app-v7_5
+  concurrency: 1000                       # number of virtual users
+  throughput: 650                         # maximum hits per second to reach
+  ramp-up: 5m
+  hold-for: 15m
+  locations:
+    us-east4-a: 12                         # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+# Heavy load increase on first time users logging in and setting their user profile
+#
+# Runs for the duration of the test alongside users opening apps
+# Amount of load is less than that of users opening apps;
+# - some users will already be logged in (not covered in this test)
+# - some will have logged in before and set their user profile already (open-and-use-app scenario)
+- scenario: user-profile
+  concurrency: 200                        # number of virtual users
+  throughput: 20                          # maximum hits per second to reach
+  ramp-up: 5m
+  hold-for: 15m
+  locations:
+    us-east4-a: 4                          # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+
+# Heavy load increase on apps refreshing after the program changes
+#
+# Apps refresh over a 50 second window.
+# They are grouped into 10 groups spaced out between 5 second intervals.
+# Every 5 seconds, one tenth of apps refresh
+# Only the current screen they have open refreshes
+#
+# Given we have 65k open apps, all on a single screen (for example, tuning into a football match)
+# we can expect 6500 attempting to refresh at once. We can afford to take 5 seconds to respond to all 6500 requests.
+#
+# We should expect a throughput of a minimum of 1300 requests per second
+- scenario: refresh-screen-on-program-change-v7_5
+  concurrency: 1500                       # number of virtual users
+  throughput: 1500                        # maximum hits per second to reach
+  delay: 5m
+  hold-for: 2m
+  iterations: 2
+  locations:
+    us-east4-a: 12                         # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+included-configs:
+- scenarios/ios.scenarios.yaml
+- scenarios/android.scenarios.yaml
+- scenarios/user-profile.scenarios.yaml
+- scenarios/listen-live-refresh.yaml

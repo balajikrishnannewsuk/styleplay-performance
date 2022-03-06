@@ -1,0 +1,28 @@
+execution:
+  - scenario: podcast-with-episodes
+    concurrency: 1
+    throughput: 3
+    ramp-up: 30s
+    hold-for: 15m
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: podcast-episode
+    concurrency: 1
+    throughput: 3
+    ramp-up: 30s
+    hold-for: 15m
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: podcasts
+    concurrency: 1
+    throughput: 3
+    ramp-up: 30s
+    hold-for: 15m
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+
+included-configs:
+  - scenarios/audio-platform.yaml

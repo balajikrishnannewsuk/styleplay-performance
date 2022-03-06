@@ -1,0 +1,48 @@
+# This test is intended to simulate sustained usage (over the course of a day)
+# at high load. The intention of this test is to identify underlying issues
+# that can be compounded due to sustained high load. It's best to only run this
+# when the service is not in use, such as overnight.
+.common-settings: &common-settings
+  ramp-up: 1h
+  hold-for: 12h
+  locations:
+    us-east4-a: 3
+  location-weighted: false
+
+execution:
+  - <<: *common-settings
+    scenario: schedule
+    concurrency: 5
+    throughput: 10
+  - <<: *common-settings
+    scenario: stations
+    concurrency: 10
+    throughput: 30
+  - <<: *common-settings
+    scenario: stations-with-schedule
+    concurrency: 5
+    throghput: 20
+  - <<: *common-settings
+    scenario: on-air-now
+    concurrency: 5
+    throughput: 25
+  - <<: *common-settings
+    scenario: schedule-with-recordings
+    concurrency: 5
+    throughput: 5
+  - <<: *common-settings
+    scenario: podcast-with-episodes
+    concurrency: 5
+    throughput: 14
+  - <<: *common-settings
+    scenario: podcast-episode
+    concurrency: 5
+    throughput: 14
+  - <<: *common-settings
+    scenario: podcasts
+    concurrency: 5
+    throughput: 14
+
+included-configs:
+  - scenarios/audio-platform.yaml
+

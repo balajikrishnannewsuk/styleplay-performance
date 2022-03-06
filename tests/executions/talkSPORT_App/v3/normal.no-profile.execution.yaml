@@ -1,0 +1,52 @@
+# Stats retrieved from https://docs.google.com/document/d/1w_iSVo7gxqmVJocg0pTiOZN5RRAUTmaQLFoKZ9TsMJw/edit
+#
+#
+# Normal load increase on opening the app and viewing each screen
+# Given we have 5k users on the app once
+# assuming these users open the app over a 5 minute period
+# This nets us a throughput of 13 hits per second
+# There is no interaction with profile API
+
+execution:
+- scenario: ios-open-and-use-app-v7_5
+  concurrency: 25                         # number of virtual users
+  throughput: 10                          # maximum hits per second to reach
+  ramp-up: 1m
+  hold-for: 5m
+  locations:
+    us-east4-a: 1                          # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+- scenario: android-open-and-use-app-v7_5
+  concurrency: 25                         # number of virtual users
+  throughput: 10                          # maximum hits per second to reach
+  ramp-up: 1m
+  hold-for: 5m
+  locations:
+    us-east4-a: 1                          # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+# Normal load increase on apps refreshing after the program changes
+#
+# Apps refresh over a 50 second window.
+# They are grouped into 10 groups spaced out between 5 second intervals.
+# Every 5 seconds, one tenth of apps refresh
+# Only the current screen they have open refreshes
+#
+# Given we have 5k open apps, all on a single screen (for example, tuning into a chat show)
+# we can expect 500 attempting to refresh at once. We can afford to take 5 seconds to respond to all 500 requests.
+#
+# We should expect a throughput of a minimum of 100 requests per second
+- scenario: refresh-screen-on-program-change-v7_5
+  concurrency: 50                         # number of virtual users
+  throughput: 100                         # maximum hits per second to reach
+  delay: 2m
+  hold-for: 2m
+  locations:
+    us-east4-a: 3                          # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+
+included-configs:
+- scenarios/ios.scenarios.yaml
+- scenarios/android.scenarios.yaml
+- scenarios/listen-live-refresh.yaml

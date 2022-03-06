@@ -1,0 +1,161 @@
+.common-attributes: &common-attributes
+  url: ${graph_url}
+  method: POST
+
+.common-headers: &common-headers
+  content-type: application/json
+  authorization: Bearer ${auth0_token}
+
+.errors-check: &errors-check
+  assert-jsonpath:
+    - jsonpath: "$.errors"
+      invert: true
+
+scenarios:
+  on-air-now:
+    requests:
+      - label: On Air Now (virginradio all stations) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: virginradio-on-air-now-performance-test
+        body:
+          query: >-
+            fragment Show on Show {  id  title  images {  url  width  metadata  }  startTime  endTime}{  stations {    id    name    stream {      url    }    logo {      url    }  }
+            virginradiouk: onAirNow(stationId: virginradiouk)  {    ...Show  }
+            virginradiochilled: onAirNow(stationId: virginradiochilled)  {    ...Show  }
+            virginradioanthems: onAirNow(stationId: virginradioanthems)  {    ...Show  }
+            virginradiogroove: onAirNow(stationId: virginradiogroove)  {    ...Show  }}
+
+      - label: On Air Now (virginradiouk) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: on-air-now-virginradiouk-performance-test
+        body:
+          query: >-
+            fragment Show on Show {  id  title  images {  url  width  metadata  }  startTime  endTime}{  stations {    id    name    stream {      url    }    logo {      url    }  }
+            onAirNow(stationId: virginradiouk)  {    ...Show  }}
+
+      - label: On Air Now (virginradiogroove) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: on-air-now-virginradiogroove-performance-test
+        body:
+          query: >-
+            fragment Show on Show {  id  title  images {  url  width  metadata  }  startTime  endTime}{  stations {    id    name    stream {      url    }    logo {      url    }  }
+            onAirNow(stationId: virginradiogroove)  {    ...Show  }}
+
+      - label: On Air Now (virginradioanthems) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: on-air-now-virginradioanthems-performance-test
+        body:
+          query: >-
+            fragment Show on Show {  id  title  images {  url  width  metadata  }  startTime  endTime}{  stations {    id    name    stream {      url    }    logo {      url    }  }
+            onAirNow(stationId: virginradioanthems)  {    ...Show  }}
+
+      - label: On Air Now (virginradiochilled) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: on-air-now-virginradiochilled-performance-test
+        body:
+          query: >-
+            fragment Show on Show {  id  title  images {  url  width  metadata  }  startTime  endTime}{  stations {    id    name    stream {      url    }    logo {      url    }  }
+            onAirNow(stationId: virginradiochilled)  {    ...Show  }}
+
+  schedule:
+    requests:
+      - label: Schedule (virginradiouk) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: schedule-virginradiouk-performance-test
+        body:
+          query: >-
+            { stations { id name logo { url } stream { url } }
+            schedule(stationId: virginradiouk) { id date shows { id title description startTime endTime images {  url  width  metadata  } recording { duration url }}}}
+
+      - label: Schedule (virginradiogroove) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: schedule-virginradiogroove-performance-test
+        body:
+          query: >-
+            { stations { id name logo { url } stream { url } }
+            schedule(stationId: virginradiogroove) { id date shows { id title description startTime endTime images {  url  width  metadata  } recording { duration url }}}}
+
+      - label: Schedule (virginradioanthems) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: schedule-virginradioanthems-performance-test
+        body:
+          query: >-
+            { stations { id name logo { url } stream { url } }
+            schedule(stationId: virginradioanthems) { id date shows { id title description startTime endTime images {  url  width  metadata  } recording { duration url }}}}
+
+      - label: Schedule (virginradiochilled) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: schedule-virginradiochilled-performance-test
+        body:
+          query: >-
+            { stations { id name logo { url } stream { url } }
+            schedule(stationId: virginradiochilled) { id date shows { id title description startTime endTime images {  url  width  metadata  } recording { duration url }}}}
+
+  recently-played:
+    requests:
+      - label: RecentlyPlayed list (virginradiouk) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: recently-played-virginradiouk-performance-test
+        body:
+          query: >-
+            { recentlyPlayed(stationId: virginradiouk) { artist title startTime endTime duration } }
+
+      - label: RecentlyPlayed list (virginradiogroove) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: recently-played-virginradiogroove-performance-test
+        body:
+          query: >-
+            { recentlyPlayed(stationId: virginradiogroove) { artist title startTime endTime duration } }
+
+      - label: RecentlyPlayed list (virginradioanthems) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: recently-played-virginradioanthems-performance-test
+        body:
+          query: >-
+            { recentlyPlayed(stationId: virginradioanthems) { artist title startTime endTime duration } }
+
+      - label: RecentlyPlayed list (virginradiochilled) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: recently-played-virginradiochilled-performance-test
+        body:
+          query: >-
+            { recentlyPlayed(stationId: virginradiochilled) { artist title startTime endTime duration } }

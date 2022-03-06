@@ -1,0 +1,6 @@
+scenarios:
+    refresh-screen-on-program-change-v7_5:
+      headers:
+        x-access-token: ${x-access-token}
+      requests:
+      - ${url}/apps/talksport-v3/theaters/listen-live?screen_ids=on-air-now-0

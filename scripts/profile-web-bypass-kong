@@ -1,0 +1,10 @@
+#!/bin/bash
+
+cat k8s/profile-api-service-uat-public.yaml \
+  | kubectl apply -f -
+
+kubectl patch deployment profile-web-deployment \
+  --patch "$(cat k8s/patches/profile-web-deployment/profile-api_uat_no-kong.yaml)"
+
+kubectl patch networkpolicy k8s-enable-aws-metadata-egress-network-policy \
+  --patch "$(cat k8s/patches/egress-network-policy-port-80.yaml)"

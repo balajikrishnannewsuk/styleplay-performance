@@ -1,0 +1,105 @@
+scenarios:
+  GET-user-profile:
+    data-sources:
+    - path: ${staging_data_source}
+      random-order: true
+    requests:
+      - url: ${kong_gateway_url}/audio/v1/user-profile/${cpn}
+        label: "GET ${kong_gateway_url}/audio/v1/user-profile/:CPN"
+        headers:
+          Cookie: ${acs_cookie}
+        assert:
+        - subject: http-code
+          contains:
+          - .*(404|200).*
+          assume-success: true  # otherwise 404s automatically count as failures
+
+  PUT-user-profile:
+    data-sources:
+    - path: ${staging_data_source}
+      random-order: true
+    requests:
+      - url: ${kong_gateway_url}/audio/v1/user-profile/${cpn}
+        label: "PUT ${kong_io/v1/user-profile/:CPN"
+        headers:
+          Cookie: ${acs_cookie}
+          Content-Type: application/json
+        method: PUT
+        body:
+          gender: "female"
+          yob: "1980"
+
+  go-to-profile-web:
+    data-sources:
+    - path: ${staging_data_source}
+      random-order: true
+    requests:
+      # multiple requests made when going to profile-web
+      # see https://github.com/newsuk/wd-performance/pull/13#discussion_r311016389
+      - url: ${profile_web_url}/talksport
+        headers:
+          Cookie: ${acs_cookie}
+      - url: ${profile_web_url}/talksport # simulating main javascript file request
+        headers:
+          Cookie: ${acs_cookie}
+      - url: ${profile_web_url}/talksport  # simulating config endpoint request
+        headers:
+          Cookie: ${acs_cookie}
+
+  submit-profile-web:
+    data-sources:
+    - path: ${staging_data_source}
+      random-order: true
+    requests:
+      - url: ${profile_web_url}/v1/profile/${cpn}  # simulating profile-web submit
+        label: "PUT ${profile_web_url}/v1/profile/:CPN"
+        headers:
+          Cookie: ${acs_cookie}
+        method: PUT
+        body:
+          gender: "female"
+          yob: "1980"
+
+  user-profile:
+    requests:
+      - include-scenario: GET-user-profile
+      - include-scenario: go-to-profile-web
+      - include-scenario: submit-profile-web
+
+  # No kong scenarios
+
+  GET-user-profile-no-kong:
+    data-sources:
+    - path: ${uat_data_source}
+      random-order: true
+    requests:
+      - url: ${profile_api_url}/v1/user-profile/${cpn}
+        label: "GET ${profile_api_url}/v1/user-profile/:CPN"
+        headers:
+          Cookie: ${acs_cookie}
+        assert:
+        - subject: http-code
+          contains:
+          - .*(404|200).*
+          assume-success: true  # otherwise 404s automatically count as failures
+
+  PUT-user-profile-no-kong:
+    data-sources:
+    - path: ${uat_data_source}
+      random-order: true
+    requests:
+      - url: ${profile_api_url}/v1/user-profile/${cpn}
+        label: "PUT ${profile_api_url}/v1/user-profile/:CPN"
+        headers:
+          Cookie: ${acs_cookie}
+          Content-Type: application/json
+        method: PUT
+        body:
+          gender: "female"
+          yob: "1980"
+
+  user-profile-no-kong:
+    requests:
+      - include-scenario: GET-user-profile-no-kong
+      - include-scenario: go-to-profile-web
+      - include-scenario: PUT-user-profile-no-kong

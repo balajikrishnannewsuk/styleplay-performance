@@ -1,0 +1,266 @@
+.common-attributes: &common-attributes
+  url: ${graph_url}
+  method: POST
+
+.common-headers: &common-headers
+  content-type: application/json
+  authorization: Bearer ${auth0_token}
+
+.errors-check: &errors-check
+  assert-jsonpath:
+    - jsonpath: "$.errors"
+      invert: true
+
+scenarios:
+  schedule:
+    requests:
+      - label: Schedule ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: schedule-performance-test
+        body:
+          query: >-
+            {
+              schedule(stationId: talksport) {
+                id
+                date
+                shows {
+                  id
+                  title
+                  programmeTitle
+                  description
+                  startTime
+                  endTime
+                  images { url, metadata, width }
+                }
+              }
+            }
+
+  stations:
+    requests:
+      - label: Stations ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: stations-performance-test
+        body:
+          query: "{ stations { name id logo { url } stream { url } } }"
+
+  stations-with-schedule:
+    requests:
+      - label: Stations with Schedule ${graph_url}
+        <<: *common-attributes
+        headers:
+          <<: *common-headers
+          x-correlation0-id: stations-with-schedule-performance-test
+        body:
+          query: >-
+            {
+              stations {
+                id
+                name
+                logo { url }
+                stream { url }
+                schedule {
+                  id
+                  title
+                  programmeTitle
+                  description
+                  images { url metadata width }
+                  startTime
+                  endTime
+                  recording { duration url }
+                }
+              }
+            }
+
+  on-air-now:
+    requests:
+      - label: On Air Now (talkSPORT) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: talksport-on-air-now-performance-test
+        body:
+          query: >-
+            {
+              onAirNow(stationId: talksport) {
+                id
+                title
+                programmeTitle
+                description
+                images { url metadata width }
+                startTime
+                endTime
+              }
+            }
+
+      - label: On Air Now (talkSPORT2) ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: talksport2-on-air-now-performance-test
+        body:
+          query: >-
+            {
+              onAirNow(stationId: talksport2) {
+                id
+                title
+                programmeTitle
+                description
+                images { url metadata width }
+                startTime
+                endTime
+              }
+            }
+
+  schedule-with-recordings:
+    requests:
+      - label: Schedule and Recordings ${graph_url}
+        <<: *common-attributes
+        headers:
+          <<: *common-headers
+          x-correlation-id: schedule-with-recordings-performance-test
+        body:
+          query: >-
+            {
+              schedule(stationId: talksport2) {
+                id
+                date
+                shows {
+                  id
+                  title
+                  programmeTitle
+                  description
+                  startTime
+                  endTime
+                  images { url, metadata, width }
+                  recording {
+                    url
+                    duration
+                  }
+                }
+              }
+            }
+
+  podcast-with-episodes:
+    data-sources:
+      - path: /bzt-configs/data/podcasts-generated.csv
+        loop: true
+    requests:
+      - label: Podcast with episodes ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: podcast-with-episodes-test
+        body:
+          query: >-
+            {
+              podcast(id: "${podcast_id}") {
+                id
+                title
+                description
+                image {
+                  url
+                }
+                episodes{
+                  items {
+                    id
+                    title
+                    description
+                    publicationDate
+                    stream {
+                      url
+                      duration
+                    }
+                    image {
+                      url
+                    }
+                  }
+                }
+              }
+            }
+
+  podcast-episode:
+    data-sources:
+      - path: /bzt-configs/data/podcasts-generated.csv
+        random-order: true
+    requests:
+      - label: Podcast episode ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: podcast-episode-test
+        body:
+          query: >-
+            {
+              podcast(id: "${podcast_id}") {
+                id
+                title
+                description
+                image {
+                  url
+                }
+                episode(id: "${first_podcast_episode_id}") {
+                  id
+                  title
+                  description
+                  publicationDate
+                  stream {
+                    url
+                    duration
+                  }
+                  image {
+                    url
+                  }
+                }
+              }
+            }
+
+  podcasts:
+    requests:
+      - label: Podcast list ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: podcasts-test
+        body:
+          query: >-
+            {
+              podcasts {
+                id
+                title
+                description
+                image {
+                  url
+                }
+              }
+            }
+
+  recently-played:
+    requests:
+      - label: RecentlyPlayed list ${graph_url}
+        <<: *common-attributes
+        <<: *errors-check
+        headers:
+          <<: *common-headers
+          x-correlation-id: recently-played-test
+        body:
+          query: >-
+            {
+              recentlyPlayed(stationId: virginradiouk) {
+                artist
+                title
+                duration
+                startTime
+                endTime
+              }
+            }

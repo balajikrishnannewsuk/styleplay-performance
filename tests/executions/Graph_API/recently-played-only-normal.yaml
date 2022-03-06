@@ -1,0 +1,19 @@
+execution:
+  - scenario: recently-played
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 5s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+
+reporting:
+- module: passfail
+  criteria:
+  - avg-rt>100ms
+  - failures>1%
+
+included-configs:
+  - scenarios/audio-platform.yaml

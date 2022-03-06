@@ -1,0 +1,21 @@
+.common-settings: &common-settings
+  concurrency: 1
+  throughput: 2
+  ramp-up: 30s
+  hold-for: 10m
+  locations:
+    us-east4-a: 1
+  location-weighted: false
+
+execution:
+  - scenario: user-profile
+    <<: *common-settings
+
+reporting:
+  - module: passfail
+    criteria:
+    - avg-rt>450ms, stop as failed
+    - failures>10%
+
+included-configs:
+  - scenarios/user-profile.scenarios.yaml

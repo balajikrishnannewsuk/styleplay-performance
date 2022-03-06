@@ -1,0 +1,13 @@
+execution:
+- scenario: user-profile
+  concurrency: 10                         # number of virtual users
+  throughput: 10                          # maximum hits per second to reach
+  # delay: 5m                             # how long to wait before generating the load
+  hold-for: 30s                           # hold the maximum throughput for this amount of time
+  locations:
+    us-east4-a: 3                          # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+included-configs:
+- scenarios/ios.scenarios.yaml
+- scenarios/user-profile.scenarios.yaml

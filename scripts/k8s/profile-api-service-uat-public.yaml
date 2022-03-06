@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Service
+metadata:
+  annotations:
+    external-dns.alpha.kubernetes.io/hostname: uat-public.profile.wireless-dev.newsuk.tech.
+  name: profile-api-service-public
+  namespace: wd-audio-platform-uat
+spec:
+  ports:
+  - port: 80
+    protocol: TCP
+    targetPort: 4003
+  selector:
+    role: profile
+  type: LoadBalancer

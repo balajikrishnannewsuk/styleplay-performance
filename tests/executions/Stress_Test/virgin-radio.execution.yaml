@@ -1,0 +1,29 @@
+# This test would run specifically to virgin radio with all the available queries
+# Includes
+# - onAirNow (As per middleware fetcher)
+# - schedule (As per middleware fetcher)
+.common-settings: &common-settings
+  concurrency: 10
+  throughput: 20
+  ramp-up: 5m
+  hold-for: 15m
+  locations:
+    us-east4-a: 1
+  location-weighted: false
+
+execution:
+  - scenario: on-air-now
+    <<: *common-settings
+  - scenario: schedule
+    <<: *common-settings
+  - scenario: recently-played
+    <<: *common-settings
+
+reporting:
+  - module: passfail
+    criteria:
+      - avg-rt>450ms, stop as failed
+      - failures>10%
+
+included-configs:
+  - scenarios/virgin-radio.scenario.yaml

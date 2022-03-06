@@ -1,0 +1,110 @@
+#!/bin/bash
+
+function echo_bold() {
+  if which tput > /dev/null; then
+    tput bold; echo $1; tput sgr0;
+  else
+    echo $1;
+  fi
+}
+
+PATH_TO_FILE=${FILE_TO_EXECUTE:-tests/executions/example/sample.execution.yaml}
+
+TARGET_ENV=${TARGET_ENV:-staging}
+RUN_ON=${RUN_ON:-local}
+INTERACTIVE=${INTERACTIVE:-true}
+LINT=${LINT:-false}
+
+# PROJECT_NAME : Use these values ["talkSPORT Backend", "Middleware virgin-radio"]
+PROJECT=${PROJECT_NAME:-"talkSPORT Backend"}
+
+if [ "$INTERACTIVE" == false ]; then
+  INTERACTIVE=""
+fi
+
+if [ "$RUN_ON" == cloud ]; then
+  SUITE=$(echo $PATH_TO_FILE | sed 's/tests\/executions\/\([a-zA-Z_\d].*\)\/.*\.yaml/\1/')
+  TEST_NAME="Wireless Digital - $SUITE - $TARGET_ENV"
+  echo "Blazemeter Test Name: '$TEST_NAME'"
+fi
+
+DATE_TIME=$(date '+%d-%m-%Y %H:%M')
+TEST_PATH=tests
+FILE="${PATH_TO_FILE//$TEST_PATH\//}"
+EXECUTION=$(basename $FILE)
+
+case ${TARGET_ENV} in
+staging)
+    ENVIRONMENT="https://talksport.stage.mpp-kwatee.com"
+    PROFILE_WEB_URL="https://join.uat.wireless.radio"
+    KONG_GATEWAY_URL="https://api.staging-news.co.uk"
+    STAGING_DATA_SOURCE=data/wls-test-users_staging-cookies.csv
+    UAT_DATA_SOURCE=data/wls-test-users_uat-cookies.csv
+    GRAPH_URL="https://api.staging-news.co.uk/audio/v1/graph"
+    STYLEPLAY_URL="https://www.uat-thetimes.co.uk/styleplay"
+    MW_VIRGINRADIO_CDN_URL="https://virgin-radio-alb.staging.apps-wireless.radio"
+    ;;
+staging-elb)
+    ENVIRONMENT="https://talksport-elb.stage.mpp-kwatee.com"
+    PROFILE_WEB_URL="https://join.uat.wireless.radio"
+    KONG_GATEWAY_URL="https://api.staging-news.co.uk"
+    STAGING_DATA_SOURCE=data/wls-test-users_staging-cookies.csv
+    UAT_DATA_SOURCE=data/wls-test-users_uat-cookies.csv
+    ;;
+staging-no-kong)
+    ENVIRONMENT="https://talksport.stage.mpp-kwatee.com"
+    PROFILE_WEB_URL="https://join.uat.wireless.radio"
+    PROFILE_API_URL="http://aaa42d624ba9c11e9b9b5021c574f1ab-722505922.eu-west-1.elb.amazonaws.com"
+    STAGING_DATA_SOURCE=data/wls-test-users_staging-cookies.csv
+    UAT_DATA_SOURCE=data/wls-test-users_uat-cookies.csv
+    ;;
+dev)
+    ENVIRONMENT="https://dev-public-graph.wireless-dev.newsuk.tech"
+;;
+staging-eks)
+    ENVIRONMENT="https://talksport.staging.apps-wireless.radio"
+    PROFILE_WEB_URL="https://join.staging.wireless.radio"
+    KONG_GATEWAY_URL="https://api.staging-news.co.uk"
+    STAGING_DATA_SOURCE=data/wls-test-users_staging-cookies.csv
+    UAT_DATA_SOURCE=data/wls-test-users_uat-cookies.csv
+    GRAPH_URL="https://api.staging-news.co.uk/audio/v1/graph"
+    STYLEPLAY_URL="https://www.uat-thetimes.co.uk/styleplay"
+    MW_VIRGINRADIO_CDN_URL="https://virgin-radio-alb.staging.apps-wireless.radio"
+;;
+prod-eks)
+    ENVIRONMENT="https://talksport.prod.apps-wireless.radio"
+;;
+*)
+    echo "Unconfigured environment"
+    exit 1
+;;
+esac
+
+echo_bold "Running against ${TARGET_ENV} $RUN_ON"
+
+# lines below are commented using `# some line` \
+docker run \
+  ${INTERACTIVE:+ --rm --interactive --tty} \
+  --name wd-perf-container \
+  wd-perf:latest \
+  -o settings.env.date_time="$DATE_TIME" \
+  -o settings.env.api_token=$API_TOKEN \
+  -o settings.env.x-access-token=$ACCESS_TOKEN \
+  -o settings.env.test_name="${TEST_NAME}" \
+  -o settings.env.url=$ENVIRONMENT \
+  -o settings.env.execution=$EXECUTION \
+  -o settings.env.project="$PROJECT" \
+  -o settings.env.run_on=$RUN_ON \
+  -o cli.linter.lint-and-exit=$LINT \
+  -o settings.env.kong_gateway_url=$KONG_GATEWAY_URL \
+  -o settings.env.profile_api_url=$PROFILE_API_URL \
+  -o settings.env.profile_web_url=$PROFILE_WEB_URL \
+  -o settings.env.staging_data_source=$STAGING_DATA_SOURCE \
+  -o settings.env.uat_data_source=$UAT_DATA_SOURCE \
+  -o settings.env.podcast_data_source=data/podcasts-generated.csv \
+  -o settings.env.auth0_token=$AUTH0_TOKEN \
+  -o settings.env.graph_url=$GRAPH_URL \
+  -o settings.env.styleplay_url=$STYLEPLAY_URL \
+  -o settings.env.virginradio_cdn_url=$MW_VIRGINRADIO_CDN_URL \
+  settings.yaml \
+  "${FILE}"

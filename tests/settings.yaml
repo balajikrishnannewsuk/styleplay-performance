@@ -1,0 +1,23 @@
+provisioning: ${run_on}
+
+cli:
+  linter:
+    lint-and-exit: ${lint}
+
+modules:
+  cloud:
+    token: ${api_token}
+    public-report: true
+    account: News UK
+    workspace: Wireless Digital
+    project: "${project}"
+    test: ${test_name}
+    report-name: "${execution} - ${date_time}"
+    default-location: eu-west-1
+
+settings:
+  verbose: false
+  env:
+    url: ${url}
+    kong_gateway_url: ${kong_gateway_url}
+    profile_web_url: ${profile_web_url}

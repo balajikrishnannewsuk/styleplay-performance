@@ -1,0 +1,34 @@
+execution:
+# These tests are expected to bypass any kong gateways and hit the API endpoints directly.
+# Make sure that the scenarios run below are requesting the public ELB for profile-api.
+#
+# Profile Web submit is usually configured to go through Kong.
+# Before running this test, configure the profile-web deployment to use the public ELB
+# for profile-api
+#
+# If the tests go through Kong, make sure you announce on the #db-api-gateway-tests channel
+# that you're running the tests so you don't affect other tenants who also use Kong
+
+- scenario: go-to-profile-web
+  concurrency: 2000                       # number of virtual users
+  throughput: 400                         # maximum hits per second to reach
+  # delay: 5m                             # how long to wait before generating the load
+  ramp-up: 10m
+  hold-for: 2m                            # hold the maximum throughput for this amount of time
+  locations:
+    us-east4-a: 10                         # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+- scenario: submit-profile-web
+  concurrency: 2000                       # number of virtual users
+  throughput: 400                         # maximum hits per second to reach
+  # delay: 5m                             # how long to wait before generating the load
+  ramp-up: 10m
+  hold-for: 2m                            # hold the maximum throughput for this amount of time
+  locations:
+    us-east4-a: 10                         # number of engines/instances
+  locations-weighted: false               # generate load evenly across all engines
+
+included-configs:
+- scenarios/ios.scenarios.yaml
+- scenarios/user-profile.scenarios.yaml

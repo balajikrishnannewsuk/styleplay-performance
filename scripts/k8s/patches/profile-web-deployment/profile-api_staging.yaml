@@ -1,0 +1,8 @@
+spec:
+  template:
+    spec:
+      containers:
+        - name: profile-web 
+          env:
+            - name: PROFILE_API_ENDPOINT
+              value: https://api.staging-news.co.uk/audio/v1/user-profile

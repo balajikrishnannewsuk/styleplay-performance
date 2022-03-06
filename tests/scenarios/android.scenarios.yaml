@@ -1,0 +1,110 @@
+scenarios:
+  # Android v7.5 scenarios
+  # Actions
+  # 1. open app
+  # 2. sign in (long delay)
+  # 3. go to schedule page
+  # 4. refresh schedule page on talksport 1 (screen pull down)
+  # 5. refresh schedule page on talksport 2 (screen pull down)
+  # 6. go to live games
+  # 7. refresh live games page (screen pull down)
+  # 8. go to settings
+  # 9. go to on air now
+  # 10. go to schedule page
+  # 11. go to live games
+  # 12. go to settings
+  android-open-and-use-app-v7_5:
+    headers:
+      x-access-token: ${x-access-token}
+    requests:
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/landing?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/landing?screen_ids=onboarding
+
+    # a long pause between the app starting (above) and the user having logged in - 3. go to schedule page
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(5s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/listen-live?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/listen-live?screen_ids=on-air-now
+
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport2
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+
+    # 4. refresh schedule page on talksport 1 (screen pull down)
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport2
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=_
+
+    # 5. refresh schedule page on talksport 2 (screen pull down)
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport2
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=_
+
+    # 6. go to live games
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/live-games?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/live-games?screen_ids=live-games
+
+    # 7. refresh live games page (screen pull down)
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3/theaters/live-games?screen_ids=live-games
+    - url: ${url}/apps/talksport-v3/theaters/live-games?screen_ids=_
+
+    # 8. go to settings
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/settings?screen_ids=settings
+    - url: ${url}/apps/talksport-v3/theaters/settings?screen_ids=_
+
+    # 9. go to on air now
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/listen-live?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/listen-live?screen_ids=on-air-now
+
+    # 10. go to schedule page
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport
+    - url: ${url}/apps/talksport-v3/theaters/schedule?screen_ids=talksport2
+
+    # 11. go to live games
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/live-games?screen_ids=live-games
+    - url: ${url}/apps/talksport-v3/theaters/live-games?screen_ids=
+
+    # 12. go to settings
+    - url: ${url}/apps/talksport-v3
+      think-time: uniform(3s, 500ms)
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/settings?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/settings?screen_ids=settings
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3
+    - url: ${url}/apps/talksport-v3/theaters/settings?screen_ids=_
+    - url: ${url}/apps/talksport-v3/theaters/settings?screen_ids=settings

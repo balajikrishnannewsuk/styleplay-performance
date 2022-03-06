@@ -1,0 +1,42 @@
+# This test would run specifically to virgin radio with all the available queries
+# Includes
+# - recently-played: This would be hit via direct ALB url.
+.run-1: &run-1
+  concurrency: 20
+  throughput: 30
+  ramp-up: 5m
+  hold-for: 10m
+
+.run-2: &run-2
+  concurrency: 40
+  throughput: 50
+  ramp-up: 8m
+  hold-for: 15m
+
+.run-3: &run-3
+  concurrency: 80
+  throughput: 100
+  ramp-up: 10m
+  hold-for: 10m
+
+.run-4: &run-4
+  concurrency: 150
+  throughput: 200
+  ramp-up: 10m
+  hold-for: 15m
+
+execution:
+  - scenario: recently-played
+    <<: *run-1
+    locations:
+      us-east4-a: 1
+    location-weighted: false
+
+reporting:
+  - module: passfail
+    criteria:
+      - avg-rt>450ms, stop as failed
+      - failures>10%
+
+included-configs:
+  - scenarios/middleware/virgin-radio-recently-played.scenario.yaml

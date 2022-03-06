@@ -1,0 +1,76 @@
+execution:
+  - scenario: schedule
+    concurrency: 2        # number of Vu
+    throughput: 2         # max rps
+    ramp-up: 30s
+    hold-for: 5m
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: stations
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 10s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: stations-with-schedule
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 20s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: on-air-now
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 30s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: schedule-with-recordings
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 40s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: podcast-with-episodes
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 50s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: podcast-episode
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 60s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+  - scenario: podcasts
+    concurrency: 2
+    throughput: 2
+    ramp-up: 30s
+    hold-for: 5m
+    delay: 70s
+    locations:
+      us-east4-a: 1
+    locations-weighted: false
+
+included-configs:
+  - scenarios/audio-platform.yaml
+

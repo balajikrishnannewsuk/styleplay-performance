@@ -1,0 +1,35 @@
+#!/bin/bash
+
+[ -z "${GENERATED_DATASOURCE_FILE}" ] && echo "GENERATED_DATASOURCE_FILE variable missing" && exit 1;
+[ -z "${AUTH0_TOKEN}" ] && echo "AUTH0_TOKEN variable missing" && exit 1;
+[ -z "${GRAPH_URL}" ] && echo "GRAPH_URL variable missing" && exit 1;
+
+
+echo "podcast_id,first_podcast_episode_id" > "$GENERATED_DATASOURCE_FILE"
+
+
+# shellcheck disable=SC2207
+arr=( $(curl --request POST \
+  --url "$GRAPH_URL" \
+  --header "authorization: Bearer ${AUTH0_TOKEN}" \
+  --header 'content-type: application/json' \
+  --data '{"query":"{ podcasts { id } } "}' \
+  | jq -r '.data.podcasts[].id') )
+
+
+for podcast_id in "${arr[@]}"
+do
+  query=$(cat <<EOF
+{ "query": "{ podcast(id: \"${podcast_id}\") { id episodes { items { id } } } } " }
+EOF
+)
+  echo "About to execute $query"
+
+  curl --request POST \
+  --url "$GRAPH_URL" \
+  --header "authorization: Bearer ${AUTH0_TOKEN}" \
+  --header 'content-type: application/json' \
+  --data "$query" \
+   | jq -r '{podcast_id: .data.podcast.id, episode_id: .data.podcast.episodes.items[].id} | [.podcast_id, .episode_id] | @csv' | sed 's/"//g' >> "$GENERATED_DATASOURCE_FILE"
+done
+

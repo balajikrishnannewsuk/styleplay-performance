@@ -1,0 +1,30 @@
+.common-settings: &common-settings
+  concurrency: 10
+  throughput: 20
+  ramp-up: 5m
+  hold-for: 15m
+  locations:
+    us-east4-a: 1
+  location-weighted: false
+
+execution:
+  - scenario: schedule
+    <<: *common-settings
+  - scenario: stations
+    <<: *common-settings
+  - scenario: stations-with-schedule
+    <<: *common-settings
+  - scenario: on-air-now
+    <<: *common-settings
+  - scenario: schedule-with-recordings
+    <<: *common-settings
+  - scenario: podcast-with-episodes
+    <<: *common-settings
+  - scenario: podcast-episode
+    <<: *common-settings
+  - scenario: podcasts
+    <<: *common-settings
+
+included-configs:
+  - scenarios/audio-platform.yaml
+

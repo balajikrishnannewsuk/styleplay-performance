@@ -1,0 +1,9 @@
+spec:
+  egress:
+  - ports:
+    - port: 80
+      protocol: TCP
+    - port: 443
+      protocol: TCP
+    - port: 8181
+      protocol: TCP
