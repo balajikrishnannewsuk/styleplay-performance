@@ -1,15 +1,15 @@
-modules:
-  blazemeter:
-    token: 1c401f105bd4b603bd218952:1bcb50524ded76719d91dda08f6fa8bc4f59ecb13ec50c88dd551d238206637f469a6933
-
+# modules:
+#   blazemeter:
+#     token: 
+  
 execution:
   - executor: jmeter
     scenario: Style play load test
-    concurrency: 10    # number of Virtual users
-    throughput: 4        # max rps
+    concurrency: 1    # number of Virtual users
+    throughput: 1        # max rps
     # iterations : 1
-    ramp-up: 1m
-    hold-for: 30m
+    ramp-up: 30s
+    hold-for: 1m
 
 reporting: 
 - module: blazemeter

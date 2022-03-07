@@ -12,7 +12,7 @@ def datagenerate(records, headers):
             FLname = full_name.split(" ")
             Fname = FLname[0]
             Lname = FLname[1]
-            tealiumId = "a0-"+Fname+"-b0"
+            tealiumId = "017f535"+Lname+"7000b7e"
             writer.writerow({
                     "tealium_Id" : tealiumId,
                     })
