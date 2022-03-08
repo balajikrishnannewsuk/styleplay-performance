@@ -1,19 +1,19 @@
-# modules:
-#   blazemeter:
-#     token: 
-  
+modules:
+  blazemeter:
+    token: 2cadfd52479c951654444fbd:e2323ba0be966df81cf836d5ea652fc1f9b9191002af0cc950d953d526a52e5bf09a50c6
+
 execution:
   - executor: jmeter
     scenario: Style play load test
-    concurrency: 1    # number of Virtual users
+    concurrency: 5    # number of Virtual users
     throughput: 1        # max rps
     # iterations : 1
-    ramp-up: 30s
-    hold-for: 1m
+    ramp-up: 1m
+    hold-for: 10m
 
 reporting: 
 - module: blazemeter
-  report-name: Style play load test report-10 concurrency and 4 throughput
+  report-name: Style play load test report-Pre metrics
   test: Taurus test
   project: Style play load test project
 # - module: console

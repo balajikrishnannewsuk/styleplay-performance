@@ -18,7 +18,7 @@ def datagenerate(records, headers):
                     })
     
 if __name__ == '__main__':
-    records = 100
+    records = 10000
     headers = ["tealium_Id"]
     datagenerate(records, headers)
     print("TealiumId CSV generation complete!")
